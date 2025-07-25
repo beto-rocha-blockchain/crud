@@ -4,4 +4,5 @@ use serde::{Deserialize, Serialize};
 pub struct DataEntry {
     pub data1: Vec<String>,
     pub data2: Vec<u8>,
+    pub owner: String,
 }

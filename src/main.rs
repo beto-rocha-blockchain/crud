@@ -1,3 +1,4 @@
+mod auth;
 mod handlers;
 mod models;
 mod state;
@@ -22,7 +23,7 @@ async fn main() -> tide::Result<()> {
     app.at("/data/:id").put(update_data); // Atualiza
     app.at("/data/:id").delete(delete_data); // Deleta
 
-    let addr = "0.0.0.0:8080";
+    let addr = "127.0.0.1:8080";
     println!("Servidor CRUD rodando em: http://{addr}");
 
     // Inicia o servidor

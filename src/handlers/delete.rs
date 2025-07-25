@@ -1,21 +1,22 @@
 use crate::state::AppState;
+use crate::auth::get_authenticated_user;
 use tide::Request;
 
 pub async fn delete_data(req: Request<AppState>) -> tide::Result {
-    // Extrai o id da URL (ex: /data/:id)
-    let id: u32 = match req.param("id")?.parse() {
-        Ok(val) => val,
-        Err(_) => return Err(tide::Error::from_str(400, "Invalid id")),
-    };
+    let id: u32 = req.param("id")?.parse().map_err(|_| tide::Error::from_str(400, "Invalid id"))?;
+    let user = get_authenticated_user(&req).ok_or_else(|| tide::Error::from_str(401, "Unauthorized"))?;
 
-    // Pega o estado global
     let state = req.state();
     let mut map = state.lock().unwrap();
 
-    // Remove o registro se existir
-    if map.remove(&id).is_some() {
-        Ok(tide::Response::new(204))
+    if let Some(entry) = map.get(&id) {
+        if entry.owner != user {
+            return Ok(tide::Response::new(403));
+        }
     } else {
-        Ok(tide::Response::new(404))
+        return Ok(tide::Response::new(404));
     }
+
+    map.remove(&id);
+    Ok(tide::Response::new(204))
 }
