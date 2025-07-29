@@ -5,8 +5,8 @@ use tide::{Request, Response, StatusCode};
 
 #[derive(serde::Deserialize)]
 struct CreatePayload {
-    data1: Vec<String>,
-    data2: Vec<u8>,
+    func_names: Vec<String>,
+    bytecode: Vec<u8>,
 }
 
 pub async fn create_data(mut req: Request<AppState>) -> tide::Result {
@@ -19,8 +19,8 @@ pub async fn create_data(mut req: Request<AppState>) -> tide::Result {
     let new_id = map.len() as u32 + 1;
 
     let entry = DataEntry {
-        data1: payload.data1,
-        data2: payload.data2,
+        func_names: payload.func_names,
+        bytecode: payload.bytecode,
         owner: user,
     };
 

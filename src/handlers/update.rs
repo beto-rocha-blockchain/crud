@@ -5,8 +5,8 @@ use tide::Request;
 
 #[derive(serde::Deserialize)]
 struct UpdatePayload {
-    data1: Vec<String>,
-    data2: Vec<u8>,
+    func_names: Vec<String>,
+    bytecode: Vec<u8>,
 }
 
 pub async fn update_data(mut req: Request<AppState>) -> tide::Result {
@@ -22,8 +22,8 @@ pub async fn update_data(mut req: Request<AppState>) -> tide::Result {
             return Ok(tide::Response::new(403));
         }
 
-        existing.data1 = payload.data1;
-        existing.data2 = payload.data2;
+        existing.func_names = payload.func_names;
+        existing.bytecode = payload.bytecode;
 
         Ok(tide::Response::new(200))
     } else {
